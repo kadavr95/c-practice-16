@@ -4,8 +4,8 @@
 #include <math.h>
 #include <time.h>
 
-#define n 2 //определение количеств элементов в столбце (н) и строке (м)
-#define m n //м максимум 11
+#define n 5 //определение количеств элементов в столбце (н) и строке (м)
+#define m n
 
 int filling(int low, int up,int matrix[][m]);//прототипы функций
 int output(int matrix[][m]);
@@ -30,27 +30,27 @@ int main(void)
 		up=low+up;
 	}
 	filling(low,up,matrix);//заполнение матрицы
-	fillfile(matrix);
+	fillfile(matrix);//ввод вывод (файл)
 	readfile(matrix);
 	output(matrix);//вывод матрицы
-   for (i=0; i < n; i++)
-   {
+	for (i=0; i < n; i++)
+	{
 		for (j = 0; j < n; j++)
 		{
 			matrix2[i][j]=matrix[i][j];
 		}
-   }
-   transpose(matrix2);
-	multiply(matrix,matrix2,matrixres);
-	   for (i=0; i < n; i++)
-   {
+	}
+	transpose(matrix2);//транспонирование
+	multiply(matrix,matrix2,matrixres);//умножение
+	for (i=0; i < n; i++)
+	{
 		for (j = 0; j < n; j++)
 		{
 			matrix[i][j]=matrixres[i][j];
 		}
-   }
-	power(matrix,matrix,matrixres,2);
-	output(matrixres);
+	}
+	power(matrix,matrix,matrixres,2);//во вторую степень
+	output(matrixres);//вывод
 	fflush(stdin);//ожидание действий пользователя
 	getchar();
 	return 0;
@@ -89,7 +89,7 @@ int output(int matrix[][m])//вывод
 		printf("|");//вывод разделителя
 		for (j = 0; j < m; j++)
 		{
-			printf("%6d|",matrix[i][j]);//вывод элемента
+			printf("%10d|",matrix[i][j]);//вывод элемента
 		}
 		printf("\n");//переход на следущую строчку
 	}
@@ -200,7 +200,7 @@ int rowsearch(int matrix[][m])//поиск строк с максимальной суммой элементов в ни
 int transpose(int matrix[][m])
 {
 	int i,j,t;
-	for (i = 0; i < n; i++)
+	for (i = 0; i < n; i++)//транспонирование элементов
 	{
 		for (j = 0; j < i; j++)
 		{
@@ -214,26 +214,26 @@ int transpose(int matrix[][m])
 int sum(int matrix[][m], int matrix2[][m], int matrixres[][m])
 {
 	int i,j;
-	  for (i=0; i < n; i++)
-   {
+	for (i=0; i < n; i++)//сложение матриц
+	{
 		for (j = 0; j < n; j++)
 		{
 			matrixres[i][j]=matrix2[i][j]+matrix[i][j];
 		}
-   }
+	}
 }
 int multiply(int matrix[][m], int matrix2[][m], int matrixres[][m])
 {
 	int i,j,k;
-	for (i=0; i < n; i++)
-   {
+	for (i=0; i < n; i++)//очистка результирующей
+	{
 		for (j = 0; j < n; j++)
 		{
 			matrixres[i][j]=0;
 		}
-   }
-	  for (i=0; i < n; i++)
-   {
+	}
+	for (i=0; i < n; i++)//перемножение матриц
+	{
 		for (j = 0; j < n; j++)
 		{
 			for (k = 0; k < n; k++)
@@ -241,20 +241,20 @@ int multiply(int matrix[][m], int matrix2[][m], int matrixres[][m])
 			 matrixres[i][j]=matrixres[i][j]+matrix2[i][k]*matrix[k][j];
 			}
 		}
-   }
+	}
 }
 int power(int matrix[][m], int matrix2[][m], int matrixres[][m], int pwr)
 {
 int i,j,k;
-	for (i = pwr; i >1; i--)
+	for (i = pwr; i >1; i--)//возведение в степень
 	{
-		multiply(matrix,matrix2,matrixres);
-		   for (k=0; k < n; k++)
-   {
-		for (j = 0; j < n; j++)
+		multiply(matrix,matrix2,matrixres);//перемножение матриц
+		for (k=0; k < n; k++)
 		{
-			matrix2[i][j]=matrixres[i][j];
+			for (j = 0; j < n; j++)
+			{
+				matrix2[i][j]=matrixres[i][j];
+			}
 		}
-   }
 	}
 }
