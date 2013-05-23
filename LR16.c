@@ -42,7 +42,14 @@ int main(void)
    }
    transpose(matrix2);
 	multiply(matrix,matrix2,matrixres);
-	power(matrix,matrix2,matrixres,2);
+	   for (i=0; i < n; i++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			matrix[i][j]=matrixres[i][j];
+		}
+   }
+	power(matrix,matrix,matrixres,2);
 	output(matrixres);
 	fflush(stdin);//ожидание действий пользователя
 	getchar();
