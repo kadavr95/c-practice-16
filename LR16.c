@@ -1,30 +1,55 @@
-//Ћабораторна€ работа 16. ¬ариант 4. яскович ƒмитрий (T02-01c). Dimini Inc. (c)2013
+//Ћабораторна€ работа . ¬ариант 1. яскович ƒмитрий (T02-01c). Govnokod Inc. (c)2013
 #include <stdio.h>//подключение библиотек
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
 
-#define n 5 //определение количеств элементов в столбце (н) и строке (м)
+#define n 2 //определение количеств элементов в столбце (н) и строке (м)
 #define m n //м максимум 11
 
-int filling(int matrix[][m]);//прототипы функций
+int filling(int low, int up,int matrix[][m]);//прототипы функций
 int output(int matrix[][m]);
 int rowsearch(int matrix[][m]);
 int fillfile(int matrix[][m]);
 int readfile(int matrix[][m]);
  int search(int matrix[][m],char *string, int *ii);
+ int transpose(int matrix[][m]);
+ int sum(int matrix[][m], int matrix2[][m], int matrixres[][m]);
+ int multiply(int matrix[][m], int matrix2[][m], int matrixres[][m]);
+ int power(int matrix[][m], int matrix2[][m], int matrixres[][m], int pwr);
 
 int main(void)
 {
-	int matrix[n][m];
-	filling(matrix);//заполнение матрицы
+	int matrix[n][m],matrix2[n][m],matrixres[n][m],low,up,i,j;
+	printf("Enter limits: ");//ввод пределов
+	scanf("%d %d", &low,&up);
+	if (low>up)//обмен пределов
+	{
+		up=low-up;
+		low=low-up;
+		up=low+up;
+	}
+	filling(low,up,matrix);//заполнение матрицы
 	fillfile(matrix);
 	readfile(matrix);
 	output(matrix);//вывод матрицы
-	rowsearch(matrix);//поиск строк с максимальной суммой элементов в них
+   for (i=0; i < n; i++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			matrix2[i][j]=matrix[i][j];
+		}
+   }
+   transpose(matrix2);
+	multiply(matrix,matrix2,matrixres);
+	power(matrix,matrix2,matrixres,2);
+	output(matrixres);
 	fflush(stdin);//ожидание действий пользовател€
 	getchar();
 	return 0;
 }
 
-int filling(int matrix[][m])//заполнение
+int filling(int low,int up,int matrix[][m])//заполнение
 {
 	int i,j;
 	int stime;
@@ -38,11 +63,11 @@ int filling(int matrix[][m])//заполнение
 		{
 			if (i%2==1)//заполнение строки если чЄтна€ слева направо
 			{
-				matrix[i][j]=-rand()+2*rand();
+				matrix[i][j]=low+(up-low)*rand()/RAND_MAX;
 			}
 			else//если нечЄтна€ справа налево
 			{
-				matrix[i][m-j-1]=-rand()+2*rand();
+				matrix[i][m-j-1]=low+(up-low)*rand()/RAND_MAX;
 			}
 		}
 	}
@@ -51,7 +76,7 @@ int filling(int matrix[][m])//заполнение
 int output(int matrix[][m])//вывод
 {
 	int i,j;
-	printf("Matrix:\n",matrix[i][j]);//заголовок
+	printf("Matrix:\n");//заголовок
 	for (i = 0; i < n; i++)//вывод матрицы
 	{
 		printf("|");//вывод разделител€
@@ -75,9 +100,9 @@ int fillfile(int matrix[][m])//заполнение файла элементами из массива
 		printf("Error while opening the file.\n");
 		exit(1);
 	}
-	for (i = 1; i <=n ; i++)//цикл по всем элементам
+	for (i = 0; i <n ; i++)//цикл по всем элементам
 	{
-		for (j = 1; j <= n; j++)
+		for (j = 0; j < n; j++)
 		{
 			ltoa(matrix[i][j],string,10);//перевод из числа в строку
 			fputs(string,filepointer);//запись числа в строковом формате в файл
@@ -98,7 +123,7 @@ int readfile(int matrix[][m])//считывание из файла в массив
 		printf("Error while opening the file.\n");
 		exit(1);
 	}
-	for (ii = 1; ii <= n; ii++)//цикл по строкам
+	for (ii = 0; ii < n; ii++)//цикл по строкам
 	{
 		fgets(fullstring,30*30,filepointer);//построчное считывание
 		search(matrix,fullstring,&ii);//поиск отдельных чисел в строке
@@ -108,7 +133,7 @@ int readfile(int matrix[][m])//считывание из файла в массив
 
  int search(int matrix[][m],char *string, int *ii)//поиск отдельных чисел в строке
 {
-	int i,j=0,k=1;//определение переменных
+	int i,j=0,k=0;//определение переменных
 	char string1[100000],charword1[100000],symbol;
 	memset(charword1,0,sizeof(charword1));//очистка переменной дл€ текущего числа
 	strcpy(string1,string);//сброс данных в локальную переменную
@@ -162,5 +187,67 @@ int rowsearch(int matrix[][m])//поиск строк с максимальной суммой элементов в ни
 		{
 			printf("%d ",i+1);//вывод номера строки
 		}
+	}
+}
+
+int transpose(int matrix[][m])
+{
+	int i,j,t;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < i; j++)
+		{
+			t=matrix[i][j];
+			matrix[i][j]=matrix[j][i];
+			matrix[j][i]=t;
+		}
+	}
+}
+
+int sum(int matrix[][m], int matrix2[][m], int matrixres[][m])
+{
+	int i,j;
+	  for (i=0; i < n; i++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			matrixres[i][j]=matrix2[i][j]+matrix[i][j];
+		}
+   }
+}
+int multiply(int matrix[][m], int matrix2[][m], int matrixres[][m])
+{
+	int i,j,k;
+	for (i=0; i < n; i++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			matrixres[i][j]=0;
+		}
+   }
+	  for (i=0; i < n; i++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			for (k = 0; k < n; k++)
+			{
+			 matrixres[i][j]=matrixres[i][j]+matrix2[i][k]*matrix[k][j];
+			}
+		}
+   }
+}
+int power(int matrix[][m], int matrix2[][m], int matrixres[][m], int pwr)
+{
+int i,j,k;
+	for (i = pwr; i >1; i--)
+	{
+		multiply(matrix,matrix2,matrixres);
+		   for (k=0; k < n; k++)
+   {
+		for (j = 0; j < n; j++)
+		{
+			matrix2[i][j]=matrixres[i][j];
+		}
+   }
 	}
 }
